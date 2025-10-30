@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useSyncExternalStore, useCallback } from 'react';
+import React, { useState, useEffect, useSyncExternalStore, useCallback, useMemo } from 'react';
 import { createRoot } from 'react-dom/client';
 import { generateNewMonster } from './monster-generator.js';
 
@@ -15,17 +15,17 @@ function useCurrentUser() {
 }
 
 function useUserCards(user) {
-    const filter = user ? { username: user.username } : { username: 'null' };
+    const filter = useMemo(() => (user ? { username: user.username } : { username: 'null' }), [user]);
 
     const subscribe = useCallback((callback) => {
         if (!user) return () => {};
         return room.collection(USER_CARDS_COLLECTION).filter(filter).subscribe(callback);
-    }, [user, JSON.stringify(filter)]);
+    }, [user, filter]);
 
     const getSnapshot = useCallback(() => {
         if (!user) return [];
         return room.collection(USER_CARDS_COLLECTION).filter(filter).getList();
-    }, [user, JSON.stringify(filter)]);
+    }, [user, filter]);
 
     const userRecords = useSyncExternalStore(subscribe, getSnapshot);
 
