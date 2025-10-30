@@ -207,5 +207,7 @@ function App() {
     );
 }
 
-const root = createRoot(document.getElementById('root'));
-root.render(<App />);
+window.addEventListener('DOMContentLoaded', () => {
+    const root = createRoot(document.getElementById('root'));
+    root.render(<App />);
+});
