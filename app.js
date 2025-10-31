@@ -1,8 +1,11 @@
-import React, { useState, useEffect, useSyncExternalStore, useCallback, useMemo } from 'react';
-import { createRoot } from 'react-dom/client';
-import { generateNewMonster } from './monster-generator.js';
+const { useState, useEffect, useSyncExternalStore, useCallback, useMemo, memo } = React;
+// We don't need to import createRoot as it will be available on ReactDOM
+// No need for generateNewMonster import as it will be a global
+// import React, { useState, useEffect, useSyncExternalStore, useCallback, useMemo } from 'react';
+// import { createRoot } from 'react-dom/client';
+// import { generateNewMonster } from './monster-generator.js';
 
-const room = new WebsimSocket();
+const room = typeof WebsimSocket === 'function' ? new WebsimSocket() : { collection: () => ({ create: () => {}, update: () => {}, filter: () => ({ getList: () => [], subscribe: () => (() => {}) }), getList: () => [], subscribe: () => (() => {}) }) };
 const USER_CARDS_COLLECTION = 'monster_cards_v1';
 
 // --- React Hooks for Websim ---
@@ -33,7 +36,7 @@ function useUserCards(user) {
 }
 
 // --- Components ---
-const Card = React.memo(({ cardData, isFlipped, onClick }) => (
+const Card = memo(({ cardData, isFlipped, onClick }) => (
     <div className="card-container" onClick={onClick ? () => onClick(cardData) : undefined}>
         <div className={`card ${isFlipped ? 'flipped' : ''}`}>
             <div className="card-face card-back" style={{ backgroundImage: "url('./card-back.png')" }}></div>
@@ -133,7 +136,7 @@ function App() {
 
         try {
             const existingNames = cards.map(c => c.name);
-            const generatedCard = await generateNewMonster(existingNames, setLoadingStatus);
+            const generatedCard = await window.generateNewMonster(existingNames, setLoadingStatus);
             setNewCard(generatedCard);
 
             const now = new Date().toISOString();
@@ -208,6 +211,6 @@ function App() {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-    const root = createRoot(document.getElementById('root'));
+    const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(<App />);
 });

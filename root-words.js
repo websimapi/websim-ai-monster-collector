@@ -1,4 +1,4 @@
-export const rootWords = {
+window.rootWords = {
   greek: {
     prefixes: [
       { word: "aero", meaning: "air, atmosphere" },

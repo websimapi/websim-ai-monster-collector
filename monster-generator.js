@@ -1,4 +1,5 @@
-import { rootWords } from "./root-words.js";
+// import { rootWords } from "./root-words.js";
+const rootWords = window.rootWords;
 
 function getRandomElements(arr, count) {
     const shuffled = [...arr].sort(() => 0.5 - Math.random());
@@ -88,7 +89,7 @@ async function generateMonsterImage(visualDescription) {
     return result.url;
 }
 
-export async function generateNewMonster(existingNames, setStatus) {
+async function generateNewMonster(existingNames, setStatus) {
     try {
         setStatus("Forging a new legend...");
         const monsterConcept = await generateMonsterConcept(existingNames);
@@ -111,3 +112,5 @@ export async function generateNewMonster(existingNames, setStatus) {
         throw new Error("The ritual failed. The monster escaped into the aether.");
     }
 }
+
+window.generateNewMonster = generateNewMonster;
